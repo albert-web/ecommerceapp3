@@ -1,10 +1,9 @@
 {
-  "auth": {
-    "ecommerceappa8a10e01": {
-      "service": "Cognito",
+  "function": {
+    "ec25c29f889PostConfirmation": {
+      "build": true,
       "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "customAuth": false
+      "service": "Lambda"
     }
   }
 }
