@@ -1,28 +1,49 @@
-/* eslint-disable-line */ const aws = require('aws-sdk');
+// amplify/backend/function/<function_name>/src/add-to-group.js
+const aws = require('aws-sdk');
 
 exports.handler = async (event, context, callback) => {
-  const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider({ apiVersion: '2016-04-18' });
-  const groupParams = {
-    GroupName: process.env.GROUP,
-    UserPoolId: event.userPoolId,
-  };
+  const cognitoProvider = new
+  aws.CognitoIdentityServiceProvider({
+    apiVersion: '2016-04-18'
+  });
 
-  const addUserParams = {
-    GroupName: process.env.GROUP,
-    UserPoolId: event.userPoolId,
-    Username: event.userName,
-  };
+  let isAdmin = false
+  // Update this array to include any admin emails you would like to enable
+  const adminEmails = [
+    'dmensah@madisoncollege.edu'
+  ]
 
-  try {
-    await cognitoidentityserviceprovider.getGroup(groupParams).promise();
-  } catch (e) {
-    await cognitoidentityserviceprovider.createGroup(groupParams).promise();
+  // If the user is one of the admins, set the isAdmin variable to true
+  //if (adminEmails.filter(x => event.request.userAttributes.email == x).length > 0.indexOf(event.request.userAttributes.email) !== -1) {
+  if (adminEmails.indexOf(event.request.userAttributes.email) !== -1) {
+
+    isAdmin = true
   }
 
-  try {
-    await cognitoidentityserviceprovider.adminAddUserToGroup(addUserParams).promise();
-    callback(null, event);
-  } catch (e) {
-    callback(e);
+  if (isAdmin) {
+    const groupParams = {
+      UserPoolId: event.userPoolId,
+      GroupName: 'Admin'
+    }
+    const userParams = {
+      UserPoolId: event.userPoolId,
+      Username: event.userName,
+      GroupName: 'Admin'
+    }
+
+    // First check to see if the group exists, and if not create the group
+    try {
+      await cognitoProvider.getGroup(groupParams).promise();
+    } catch (e) {
+      await cognitoProvider.createGroup(groupParams).promise();
+    }
+    // The user is an administrator, place them in the Admin group
+    try {
+      await cognitoProvider.adminAddUserToGroup(userParams).promise();
+      callback(null, event);
+    } catch (e) { callback(e); }
+  } else {
+    // If the user is in neither group, proceed with no action
+    callback(null, event)
   }
-};
+}
