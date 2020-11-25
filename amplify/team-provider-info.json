@@ -16,6 +16,9 @@
         "ecommerceappd9b0a746PostConfirmation": {
           "GROUP": "Admin"
         }
+      },
+      "auth": {
+        "ecommerceappd9b0a746": {}
       }
     }
   }
