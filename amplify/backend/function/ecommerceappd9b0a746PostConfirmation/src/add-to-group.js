@@ -9,14 +9,10 @@ exports.handler = async (event, context, callback) => {
 
   let isAdmin = false
   // Update this array to include any admin emails you would like to enable
-  const adminEmails = [
-    'dmensah@madisoncollege.edu'
-  ]
+  const adminEmails = ['dmensah@madisoncollege.edu']
 
   // If the user is one of the admins, set the isAdmin variable to true
-  //if (adminEmails.filter(x => event.request.userAttributes.email == x).length > 0.indexOf(event.request.userAttributes.email) !== -1) {
   if (adminEmails.indexOf(event.request.userAttributes.email) !== -1) {
-
     isAdmin = true
   }
 
