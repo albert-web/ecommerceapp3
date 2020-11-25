@@ -16,6 +16,9 @@
         "ec25c29f889PostConfirmation": {
           "GROUP": "Admin"
         }
+      },
+      "auth": {
+        "cognito108a19ef": {}
       }
     }
   }
