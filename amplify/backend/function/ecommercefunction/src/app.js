@@ -57,10 +57,24 @@ app.use(function(req, res, next) {
  * Example get method *
  **********************/
 
-app.get('/products', function(req, res) {
-  // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
-});
+app.get('/products', async function(req, res) {
+  try {
+    const data = await getItems()
+    res.json({ data: data })
+  } catch (err) {
+    res.json({ error: err })
+  }
+})
+
+async function getItems(){
+  var params = { TableName: ddb_table_name }
+  try {
+    const data = await docClient.scan(params).promise()
+    return data
+  } catch (err) {
+    return err
+  }
+}
 
 app.get('/products/*', function(req, res) {
   // Add your code here
@@ -71,9 +85,21 @@ app.get('/products/*', function(req, res) {
 * Example post method *
 ****************************/
 
-app.post('/products', function(req, res) {
-  // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
+app.post('/products', async function(req, res) {
+  const { body } = req
+  const { event } = req.apiGateway
+  try {
+    await canPerformAction(event, 'Admin')
+    const input = { ...body, id: uuid() }
+    var params = {
+      TableName: ddb_table_name,
+      Item: input
+    }
+    await docClient.put(params).promise()
+    res.json({ success: 'item saved to database..' })
+  } catch (err) {
+    res.json({ error: err })
+  }
 });
 
 app.post('/products/*', function(req, res) {
@@ -99,9 +125,19 @@ app.put('/products/*', function(req, res) {
 * Example delete method *
 ****************************/
 
-app.delete('/products', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
+app.delete('/products', async function(req, res) {
+  const { event } = req.apiGateway
+  try {
+    await canPerformAction(event, 'Admin')
+    var params = {
+      TableName : ddb_table_name,
+      Key: { id: req.body.id }
+    }
+    await docClient.delete(params).promise()
+    res.json({ success: 'successfully deleted item' })
+  } catch (err) {
+    res.json({ error: err })
+  }
 });
 
 app.delete('/products/*', function(req, res) {
