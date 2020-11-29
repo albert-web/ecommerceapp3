@@ -2,24 +2,32 @@ import React, {
     useState
     , useEffect
 } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { 
+    HashRouter
+    , Route
+    , Switch 
+} from 'react-router-dom';
 
 import Nav from './Nav';
 import Admin from './Admin';
 import Main from './Main';
 import Profile from './Profile';
 
-export default function Router() {
-  const [current, setCurrent] = useState('home')
-  useEffect(
-      () => {
+const Router = () => {
+    const [current, setCurrent] = useState('home'); 
 
-    setRoute()
-    window.addEventListener('hashchange', setRoute)
-    return () =>  window.removeEventListener('hashchange', setRoute)
-  }
-  , []
+   useEffect(
+        () => {
+
+      setRoute();
+      window.addEventListener('hashchange', setRoute);
+
+      return () =>  window.removeEventListener('hashchange', setRoute);
+
+    }
+    , []
   );
+  
   const setRoute = () => {
       //Get the location from the windown object.
     const location = window.location.href.split('/');

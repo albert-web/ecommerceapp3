@@ -19,4 +19,6 @@ const containerStyle = {
   margin: '20px auto'
 }
 
+
+// With Authenticator is an HOC or higher order component..
 export default withAuthenticator(Profile);
