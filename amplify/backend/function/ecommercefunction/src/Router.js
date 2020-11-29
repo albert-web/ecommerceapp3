@@ -40,3 +40,5 @@ export default function Router() {
     </HashRouter>
   );
 }
+
+export default Router;
