@@ -69,6 +69,10 @@ return (
         )
     }
     </Menu>
+
+    <h3>
+        Hello { user.userName }
+    </h3>
     </div>
 )
 };
