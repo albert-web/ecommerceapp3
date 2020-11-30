@@ -44,7 +44,7 @@ const Admin = () => {
 
       // Blank out (or reset) the input controls after adding ... very optimistic...
       updateItemInfo(initialState);
-
+      console.log(data);
       //Call the REST endpoint ...
       await API.post(
         'ecommerceapi'
