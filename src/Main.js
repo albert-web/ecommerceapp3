@@ -82,7 +82,7 @@ const Main = () => {
             console.log('successfully deleted item');
               
           } catch (err) {
-              console.error(err);
+            console.log('error: ', err)
           }
       }
     return (

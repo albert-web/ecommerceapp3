@@ -71,7 +71,7 @@ const Admin = () => {
         onChange={updateForm}
         value={itemInfo.price}
         style={inputStyle}
-        placeholder='Item price'
+        placeholder='item price'
       />
       <Button
         style={buttonStyle}
