@@ -90,7 +90,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-ecommerceapp-dev-112518-deployment",
-          "S3Key": "amplify-builds/ecommercefunction-392b3431556a52613078-build.zip"
+          "S3Key": "amplify-builds/ecommercefunction-5a4e7a33443163632b39-build.zip"
         }
       }
     },
