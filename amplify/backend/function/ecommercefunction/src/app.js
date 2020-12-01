@@ -15,9 +15,15 @@ See the License for the specific language governing permissions and limitations 
 	STORAGE_PRODUCTTABLE_NAME
 Amplify Params - DO NOT EDIT */
 
+
+
+
+
+
 var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
+
 
 const AWS = require('aws-sdk')
 const { v4: uuid } = require('uuid')
@@ -51,6 +57,47 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
 });
+
+
+async function getGroupsForUser(event) {
+  let userSub =
+    event
+      .requestContext
+      .identity
+      .cognitoAuthenticationProvider
+      .split(':CognitoSignIn:')[1]
+  let userParams = {
+    UserPoolId: userpoolId,
+    Filter: `sub = "${userSub}"`,
+  }
+  let userData = await cognito.listUsers(userParams).promise()
+  const user = userData.Users[0]
+  var groupParams = {
+    UserPoolId: userpoolId,
+    Username: user.Username
+  }
+  const groupData = await cognito.adminListGroupsForUser(groupParams).promise()
+  return groupData
+}
+
+async function canPerformAction(event, group) {
+  return new Promise(async (resolve, reject) => {
+    if (!event.requestContext.identity.cognitoAuthenticationProvider) {
+      return reject()
+    }
+    const groupData = await getGroupsForUser(event)
+    const groupsForUser = groupData.Groups.map(group => group.GroupName)
+    if (groupsForUser.includes(group)) {
+      resolve()
+    } else {
+      reject('user not in group, cannot perform action..')
+    }
+  })
+}
+
+
+
+
 
 
 /**********************
@@ -148,6 +195,7 @@ app.delete('/products/*', function(req, res) {
 app.listen(3000, function() {
     console.log("App started")
 });
+
 
 // Export the app object. When executing the application local this does nothing. However,
 // to port it to AWS Lambda we will create a wrapper around that will load the app from
